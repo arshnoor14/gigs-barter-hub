@@ -1,5 +1,4 @@
 export default function BrowseGigs() {
-  // Mock data for gig listings
   const gigs = [
     {
       id: 1,

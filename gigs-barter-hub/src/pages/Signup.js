@@ -1,21 +1,49 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
-function Signup() {
+function Signup({ onLogin }) {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: ''
   });
+  const [error, setError] = useState('');
+  const navigate = useNavigate();
 
   const handleChange = (e) => {
     setFormData({...formData, [e.target.name]: e.target.value});
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    console.log("Signup data:", formData);
-    // This will be handled by a backend service later
+    setError('');
+
+    try {
+      // API call to your backend's register route
+      const response = await fetch('http://localhost:5000/api/users/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        console.log("Signup successful:", data);
+        // After successful signup, call onLogin to update the app state
+        onLogin();
+        // Redirect the user to the profile page or home page
+        navigate('/profile');
+      } else {
+        // Handle registration failure
+        setError(data.message || "Registration failed. Please try again.");
+      }
+    } catch (err) {
+      console.error("Signup error:", err);
+      setError("An error occurred. Please check your network and try again.");
+    }
   };
 
   return (
@@ -24,6 +52,11 @@ function Signup() {
         <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6 text-center">
           Create Your Account
         </h2>
+        {error && (
+          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
+            <span className="block sm:inline">{error}</span>
+          </div>
+        )}
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
             <input 
