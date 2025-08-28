@@ -12,12 +12,14 @@ export default function Navbar({ isLoggedIn, onLogout }) {
         {/* Navigation Links */}
         <div className="flex items-center space-x-8">
           <NavLink to="/">Home</NavLink>
-          <NavLink to="/browse">Browse Gigs</NavLink>
-
+          <NavLink to="/about">About Us</NavLink>
+          
           {isLoggedIn ? (
             <>
+              <NavLink to="/browse">Browse Gigs</NavLink> {/* Moved up */}
               <NavLink to="/post-gig">Post a Gig</NavLink>
               <NavLink to="/profile">My Profile</NavLink>
+
               <button
                 onClick={onLogout}
                 className="bg-red-600 text-white font-semibold py-2 px-6 rounded-full shadow-lg transition-transform transform hover:scale-105 hover:bg-red-700"

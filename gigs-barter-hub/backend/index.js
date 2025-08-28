@@ -22,4 +22,8 @@ mongoose.connect(MONGO_URI)
   });
 
 const userRoutes = require("./routes/userRoutes");
-app.use("/api/users", userRoutes);  // Base route
+app.use("/api/users", userRoutes);
+
+// The `require` statement looks for the file in the correct relative path
+const gigRoutes = require("./routes/gigRoutes");
+app.use("/api/gigs", gigRoutes);

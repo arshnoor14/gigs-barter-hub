@@ -18,7 +18,6 @@ function Login({ onLogin }) {
     setError('');
 
     try {
-      // API call to your backend's login route
       const response = await fetch('http://localhost:5000/api/users/login', {
         method: 'POST',
         headers: {
@@ -31,12 +30,10 @@ function Login({ onLogin }) {
 
       if (response.ok) {
         console.log("Login successful:", data);
-        // This is the critical line that saves the token
-        localStorage.setItem('token', data.token); //
+        localStorage.setItem('token', data.token);
         onLogin();
-        navigate('/profile');
+        navigate('/'); // Redirect to the home page after login
       } else {
-        // Handle login failure
         setError(data.message || "Login failed. Please try again.");
       }
     } catch (err) {
