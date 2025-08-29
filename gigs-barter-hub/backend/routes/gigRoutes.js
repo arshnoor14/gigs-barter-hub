@@ -2,7 +2,7 @@ const express = require("express");
 const router = express.Router();
 const { protect } = require("../middleware/authMiddleware");
 const Gig = require("../models/Gig");
-const Application = require("../models/Application"); // This is used for the apply feature
+const Application = require("../models/Application");
 
 // Route: GET /api/gigs - Public route to get all gigs
 router.get("/", async (req, res) => {
@@ -11,6 +11,16 @@ router.get("/", async (req, res) => {
     res.status(200).json(gigs);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
+  }
+});
+
+// ✅ FIX: my-gigs route upar le aaya
+router.get("/my-gigs", protect, async (req, res) => {
+  try {
+    const gigs = await Gig.find({ user: req.user.id });
+    res.status(200).json(gigs);
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
   }
 });
 
@@ -92,28 +102,28 @@ router.delete("/:id", protect, async (req, res) => {
   }
 });
 
-// New: Route to apply for a gig
+// Route to apply for a gig
 router.post("/:id/apply", protect, async (req, res) => {
-    try {
-        const gigId = req.params.id;
-        const userId = req.user.id;
+  try {
+    const gigId = req.params.id;
+    const userId = req.user.id;
 
-        const existingApplication = await Application.findOne({ gig: gigId, user: userId });
-        if (existingApplication) {
-            return res.status(400).json({ message: "You have already applied for this gig." });
-        }
-
-        const newApplication = new Application({
-            gig: gigId,
-            user: userId,
-        });
-
-        await newApplication.save();
-        res.status(201).json({ message: "Application submitted successfully.", application: newApplication });
-
-    } catch (error) {
-        res.status(500).json({ message: "Server error", error: error.message });
+    const existingApplication = await Application.findOne({ gig: gigId, user: userId });
+    if (existingApplication) {
+      return res.status(400).json({ message: "You have already applied for this gig." });
     }
+
+    const newApplication = new Application({
+      gig: gigId,
+      user: userId,
+    });
+
+    await newApplication.save();
+    res.status(201).json({ message: "Application submitted successfully.", application: newApplication });
+
+  } catch (error) {
+    res.status(500).json({ message: "Server error", error: error.message });
+  }
 });
 
 module.exports = router;

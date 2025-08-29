@@ -15,15 +15,20 @@ const MONGO_URI = process.env.MONGO_URI;
 mongoose.connect(MONGO_URI)
   .then(() => {
     console.log('✅ MongoDB connected');
+    
+    // Load models to ensure they are registered before routes
+    require('./models/User');
+    require('./models/Gig');
+    require('./models/Application');
+
+    const userRoutes = require("./routes/userRoutes");
+    app.use("/api/users", userRoutes);
+
+    const gigRoutes = require("./routes/gigRoutes");
+    app.use("/api/gigs", gigRoutes);
+
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   })
   .catch((err) => {
     console.error('❌ MongoDB connection failed:', err);
   });
-
-const userRoutes = require("./routes/userRoutes");
-app.use("/api/users", userRoutes);
-
-// The `require` statement looks for the file in the correct relative path
-const gigRoutes = require("./routes/gigRoutes");
-app.use("/api/gigs", gigRoutes);

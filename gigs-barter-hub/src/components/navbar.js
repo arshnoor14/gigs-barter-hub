@@ -16,9 +16,10 @@ export default function Navbar({ isLoggedIn, onLogout }) {
           
           {isLoggedIn ? (
             <>
-              <NavLink to="/browse">Browse Gigs</NavLink> {/* Moved up */}
+              <NavLink to="/browse">Browse Gigs</NavLink>
               <NavLink to="/post-gig">Post a Gig</NavLink>
               <NavLink to="/profile">My Profile</NavLink>
+              <NavLink to="/dashboard">Dashboard</NavLink> {/* New Dashboard link */}
 
               <button
                 onClick={onLogout}

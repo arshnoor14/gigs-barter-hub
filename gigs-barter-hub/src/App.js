@@ -1,19 +1,24 @@
-import { BrowserRouter as Router, Routes, Route, useNavigate, Navigate } from 'react-router-dom';
-import { useState } from 'react';
-import Navbar from './components/navbar';
-import Home from './pages/home';
-import PostGig from './pages/PostGig';
-import BrowseGigs from './pages/BrowseGigs';
-import MyProfile from './pages/MyProfile';
-import Login from './pages/Login';
-import Signup from './pages/Signup';
-import AboutUs from './pages/AboutUs';
-import FAQs from './pages/FAQs';
-import ContactUs from './pages/ContactUs';
-import EditGig from './pages/EditGig';
-import Footer from './components/footer'; // Import the new Footer component
-import './App.css';
+import { Routes, Route, useNavigate, Navigate } from "react-router-dom";
+import { useState } from "react";
+import Navbar from "./components/navbar";
+import Footer from "./components/footer";
+import Home from "./pages/home";
+import PostGig from "./pages/PostGig";
+import BrowseGigs from "./pages/BrowseGigs";
+import MyProfile from "./pages/MyProfile";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import AboutUs from "./pages/AboutUs";
+import FAQs from "./pages/FAQs";
+import ContactUs from "./pages/ContactUs";
+import EditGig from "./pages/EditGig";
+import Dashboard from "./pages/Dashboard";
+import jwtDecode from "jwt-decode";
+import "./App.css";
 
+// -------------------------
+// ProtectedRoute Component
+// -------------------------
 const ProtectedRoute = ({ isLoggedIn, children }) => {
   if (!isLoggedIn) {
     return <Navigate to="/login" replace />;
@@ -21,19 +26,24 @@ const ProtectedRoute = ({ isLoggedIn, children }) => {
   return children;
 };
 
-// This is the component that handles the routing
+// -------------------------
+// App Routes
+// -------------------------
 function AppRoutes() {
-  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
+  const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
   const navigate = useNavigate();
 
+  // called after successful login/signup
   const handleLogin = () => {
     setIsLoggedIn(true);
+    navigate("/"); // redirect to home (optional)
   };
 
+  // called when user clicks logout
   const handleLogout = () => {
-    localStorage.removeItem('token');
+    localStorage.removeItem("token");
     setIsLoggedIn(false);
-    navigate('/login');
+    navigate("/login");
   };
 
   return (
@@ -48,8 +58,16 @@ function AppRoutes() {
           <Route path="/about" element={<AboutUs />} />
           <Route path="/faqs" element={<FAQs />} />
           <Route path="/contact" element={<ContactUs />} />
-          <Route path="/edit-gig/:id" element={<EditGig />} />
 
+          {/* Protected Routes */}
+          <Route
+            path="/edit-gig/:id"
+            element={
+              <ProtectedRoute isLoggedIn={isLoggedIn}>
+                <EditGig />
+              </ProtectedRoute>
+            }
+          />
           <Route
             path="/post-gig"
             element={
@@ -66,6 +84,14 @@ function AppRoutes() {
               </ProtectedRoute>
             }
           />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute isLoggedIn={isLoggedIn}>
+                <Dashboard />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </div>
       <Footer />
@@ -73,13 +99,11 @@ function AppRoutes() {
   );
 }
 
-// This is the main App component that sets up the Router
+// -------------------------
+// Main App Component
+// -------------------------
 function App() {
-  return (
-    <Router>
-      <AppRoutes />
-    </Router>
-  );
+  return <AppRoutes />;
 }
 
 export default App;
