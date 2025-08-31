@@ -21,10 +21,12 @@ This project is built using:
 - **React.js** – Frontend JavaScript library for building UI
 - **React Router DOM** – For managing navigation and routing
 - **Tailwind CSS** – Utility-first framework for fast and clean styling
+- **MongoDB** - Used for database connection (Mongoose)
+- **JWT-Authentication** - Secure login
 
 ---
 
-## 📦 Getting Started
+
 
 ### ✅ Prerequisites
 
@@ -32,5 +34,7 @@ Make sure you have these installed:
 
 - [Node.js](https://nodejs.org/) (v14 or later)
 - npm (Node Package Manager)
+- MongoDB Shell
+  
 
 
