@@ -11,7 +11,6 @@ export default function PostGig() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
-  // Get the token from local storage
   const token = localStorage.getItem('token');
 
   const handleChange = (e) => {
@@ -33,7 +32,7 @@ export default function PostGig() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`, // Include the token in the header
+          'Authorization': `Bearer ${token}`, 
         },
         body: JSON.stringify(formData),
       });
@@ -42,7 +41,6 @@ export default function PostGig() {
 
       if (response.ok) {
         setMessage("Gig posted successfully!");
-        // Optionally, clear the form or redirect
         setFormData({ title: '', description: '', price: '' });
         navigate('/browse');
       } else {
@@ -55,65 +53,76 @@ export default function PostGig() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 pt-16">
-      <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-2xl">
-        <h2 className="text-4xl font-extrabold text-gray-900 dark:text-white mb-6 text-center">
-          Post a New Gig
-        </h2>
-        {message && <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4" role="alert">{message}</div>}
-        {error && <div className="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4" role="alert">{error}</div>}
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 pt-16">
+  <div className="bg-gradient-to-br from-white via-gray-50 to-white p-8 rounded-2xl shadow-2xl w-full max-w-2xl border border-gray-200">
+    <h2 className="text-4xl font-extrabold text-gray-800 mb-6 text-center tracking-wide">
+      Post a New Gig
+    </h2>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <label htmlFor="title" className="block text-lg font-medium text-gray-700 dark:text-gray-200">Gig Title</label>
-            <input 
-              type="text" 
-              id="title" 
-              name="title" 
-              value={formData.title}
-              onChange={handleChange}
-              placeholder="e.g. Website development, Logo design"
-              required 
-              className="w-full mt-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 dark:bg-gray-700 dark:text-white"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="description" className="block text-lg font-medium text-gray-700 dark:text-gray-200">Description</label>
-            <textarea 
-              id="description" 
-              name="description" 
-              value={formData.description}
-              onChange={handleChange}
-              placeholder="Describe the gig in detail..."
-              rows="5"
-              required 
-              className="w-full mt-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 dark:bg-gray-700 dark:text-white"
-            />
-          </div>
-
-          <div>
-            <label htmlFor="price" className="block text-lg font-medium text-gray-700 dark:text-gray-200">Price / Barter Offer</label>
-            <input 
-              type="text" 
-              id="price" 
-              name="price" 
-              value={formData.price}
-              onChange={handleChange}
-              placeholder="e.g. $500 or Barter: Web hosting"
-              required 
-              className="w-full mt-1 px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 dark:bg-gray-700 dark:text-white"
-            />
-          </div>
-
-          <button 
-            type="submit" 
-            className="w-full bg-purple-600 text-white font-semibold py-3 rounded-lg shadow-md transition-transform transform hover:scale-105 hover:bg-purple-700"
-          >
-            Post Gig
-          </button>
-        </form>
+    {message && (
+      <div className="bg-green-50 border-l-4 border-green-400 text-green-700 p-4 mb-4 rounded-md shadow-sm" role="alert">
+        {message}
       </div>
-    </div>
+    )}
+
+    {error && (
+      <div className="bg-red-50 border-l-4 border-red-400 text-red-700 p-4 mb-4 rounded-md shadow-sm" role="alert">
+        {error}
+      </div>
+    )}
+
+    <form onSubmit={handleSubmit} className="space-y-6">
+      <div>
+        <label htmlFor="title" className="block text-lg font-semibold text-gray-700">Gig Title</label>
+        <input
+          type="text"
+          id="title"
+          name="title"
+          value={formData.title}
+          onChange={handleChange}
+          placeholder="e.g. Website development, Logo design"
+          required
+          className="w-full mt-1 px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all duration-300 hover:shadow-md"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="description" className="block text-lg font-semibold text-gray-700">Description</label>
+        <textarea
+          id="description"
+          name="description"
+          value={formData.description}
+          onChange={handleChange}
+          placeholder="Describe the gig in detail..."
+          rows="5"
+          required
+          className="w-full mt-1 px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all duration-300 hover:shadow-md"
+        />
+      </div>
+
+      <div>
+        <label htmlFor="price" className="block text-lg font-semibold text-gray-700">Price / Barter Offer</label>
+        <input
+          type="text"
+          id="price"
+          name="price"
+          value={formData.price}
+          onChange={handleChange}
+          placeholder="e.g. $500 or Barter: Web hosting"
+          required
+          className="w-full mt-1 px-4 py-3 border border-gray-200 rounded-xl shadow-sm focus:outline-none focus:ring-2 focus:ring-gray-300 transition-all duration-300 hover:shadow-md"
+        />
+      </div>
+
+      <button
+        type="submit"
+        className="w-full bg-gray-100 text-gray-800 font-bold py-3 rounded-xl shadow-lg hover:shadow-2xl transition-transform transform hover:scale-105"
+      >
+        Post Gig
+      </button>
+    </form>
+  </div>
+</div>
+
   );
 }

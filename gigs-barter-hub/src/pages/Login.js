@@ -1,38 +1,32 @@
-import React, { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 
 function Login({ onLogin }) {
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
-  const [error, setError] = useState('');
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleChange = (e) => {
-    setFormData({...formData, [e.target.name]: e.target.value});
+    setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError('');
+    setError("");
 
     try {
-      const response = await fetch('http://localhost:5000/api/users/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+      const response = await fetch("http://localhost:5000/api/users/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
       });
 
       const data = await response.json();
 
       if (response.ok) {
-        console.log("Login successful:", data);
-        localStorage.setItem('token', data.token);
+        localStorage.setItem("token", data.token);
         onLogin();
-        navigate('/'); // Redirect to the home page after login
+        navigate("/");
       } else {
         setError(data.message || "Login failed. Please try again.");
       }
@@ -43,49 +37,51 @@ function Login({ onLogin }) {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 pt-16">
-      <div className="bg-white dark:bg-gray-800 p-8 rounded-xl shadow-2xl w-full max-w-md">
-        <h2 className="text-3xl font-extrabold text-gray-900 dark:text-white mb-6 text-center">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-green-50 pt-16">
+      <div className="bg-white p-10 rounded-3xl shadow-md w-full max-w-md border border-blue-100">
+        <h2 className="text-3xl font-extrabold text-gray-800 mb-6 text-center tracking-wide">
           Login to Your Account
         </h2>
+
         {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative mb-4" role="alert">
-            <span className="block sm:inline">{error}</span>
+          <div className="bg-red-100 border border-red-200 text-red-700 px-4 py-3 rounded-lg mb-4">
+            {error}
           </div>
         )}
-        <form onSubmit={handleSubmit} className="space-y-6">
-          <div>
-            <input 
-              type="email" 
-              name="email" 
-              placeholder="Email" 
-              value={formData.email}
-              onChange={handleChange} 
-              required 
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 dark:bg-gray-700 dark:text-white"
-            />
-          </div>
-          <div>
-            <input 
-              type="password" 
-              name="password" 
-              placeholder="Password" 
-              value={formData.password}
-              onChange={handleChange} 
-              required 
-              className="w-full px-4 py-3 border border-gray-300 dark:border-gray-600 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 dark:bg-gray-700 dark:text-white"
-            />
-          </div>
-          <button 
-            type="submit" 
-            className="w-full bg-purple-600 text-white font-semibold py-3 rounded-lg shadow-md transition-transform transform hover:scale-105 hover:bg-purple-700"
+
+        <form onSubmit={handleSubmit} className="space-y-5">
+          <input
+            type="email"
+            name="email"
+            placeholder="Email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 bg-blue-50"
+          />
+          <input
+            type="password"
+            name="password"
+            placeholder="Password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-blue-300 bg-blue-50"
+          />
+          <button
+            type="submit"
+            className="w-full bg-purple-400 text-white font-semibold py-3 rounded-xl shadow-md"
           >
             Login
           </button>
         </form>
-        <p className="mt-6 text-center text-gray-600 dark:text-gray-400">
-          Don't have an account? 
-          <Link to="/signup" className="text-purple-600 font-bold hover:underline ml-1">
+
+        <p className="mt-6 text-center text-gray-600">
+          Don't have an account?
+          <Link
+            to="/signup"
+            className="text-purple-500 font-semibold ml-1 hover:underline"
+          >
             Sign up
           </Link>
         </p>

@@ -16,7 +16,6 @@ mongoose.connect(MONGO_URI)
   .then(() => {
     console.log('✅ MongoDB connected');
     
-    // Load models to ensure they are registered before routes
     require('./models/User');
     require('./models/Gig');
     require('./models/Application');

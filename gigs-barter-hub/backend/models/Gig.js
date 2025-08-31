@@ -13,7 +13,6 @@ const gigSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  // This links the gig to the user who posted it
   user: {
     type: mongoose.Schema.Types.ObjectId,
     required: true,

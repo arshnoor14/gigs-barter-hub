@@ -19,7 +19,6 @@ function Signup({ onLogin }) {
     setError('');
 
     try {
-      // API call to your backend's register route
       const response = await fetch('http://localhost:5000/api/users/register', {
         method: 'POST',
         headers: {
@@ -32,12 +31,9 @@ function Signup({ onLogin }) {
 
       if (response.ok) {
         console.log("Signup successful:", data);
-        // After successful signup, call onLogin to update the app state
         onLogin();
-        // Redirect the user to the profile page or home page
         navigate('/profile');
       } else {
-        // Handle registration failure
         setError(data.message || "Registration failed. Please try again.");
       }
     } catch (err) {

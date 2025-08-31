@@ -4,7 +4,6 @@ const { protect } = require("../middleware/authMiddleware");
 const Gig = require("../models/Gig");
 const Application = require("../models/Application");
 
-// Route: GET /api/gigs - Public route to get all gigs
 router.get("/", async (req, res) => {
   try {
     const gigs = await Gig.find().populate("user", "name");
@@ -14,7 +13,6 @@ router.get("/", async (req, res) => {
   }
 });
 
-// ✅ FIX: my-gigs route upar le aaya
 router.get("/my-gigs", protect, async (req, res) => {
   try {
     const gigs = await Gig.find({ user: req.user.id });
@@ -24,7 +22,6 @@ router.get("/my-gigs", protect, async (req, res) => {
   }
 });
 
-// Route: GET /api/gigs/:id - Public route to get a single gig by ID
 router.get("/:id", async (req, res) => {
   try {
     const gig = await Gig.findById(req.params.id).populate("user", "name");
@@ -37,7 +34,6 @@ router.get("/:id", async (req, res) => {
   }
 });
 
-// Route: POST /api/gigs - Protected route to post a new gig
 router.post("/", protect, async (req, res) => {
   try {
     const { title, description, price } = req.body;
@@ -56,7 +52,6 @@ router.post("/", protect, async (req, res) => {
   }
 });
 
-// Route: PUT /api/gigs/:id - Protected route to update a gig
 router.put("/:id", protect, async (req, res) => {
   try {
     const gig = await Gig.findById(req.params.id);
@@ -81,7 +76,6 @@ router.put("/:id", protect, async (req, res) => {
   }
 });
 
-// Route: DELETE /api/gigs/:id - Protected route to delete a gig
 router.delete("/:id", protect, async (req, res) => {
   try {
     const gig = await Gig.findById(req.params.id);
@@ -102,7 +96,6 @@ router.delete("/:id", protect, async (req, res) => {
   }
 });
 
-// Route to apply for a gig
 router.post("/:id/apply", protect, async (req, res) => {
   try {
     const gigId = req.params.id;

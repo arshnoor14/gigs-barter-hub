@@ -1,11 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User");
-const Application = require("../models/Application"); // New import for the Application model
+const Application = require("../models/Application"); 
 const jwt = require("jsonwebtoken");
 const { protect } = require("../middleware/authMiddleware");
 
-// Route: POST /api/users/register
 router.post("/register", async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
@@ -18,7 +17,6 @@ router.post("/register", async (req, res) => {
   }
 });
 
-// Route: POST /api/users/login
 router.post("/login", async (req, res) => {
   const { email, password } = req.body;
   try {
@@ -40,7 +38,6 @@ router.post("/login", async (req, res) => {
   }
 });
 
-// Route: GET /api/users/profile
 router.get("/profile", protect, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select("-password"); // exclude password
@@ -48,28 +45,25 @@ router.get("/profile", protect, async (req, res) => {
       return res.status(404).json({ message: "User not found" });
     }
 
-    res.status(200).json({
-      _id: user._id,
-      name: user.name,
-      email: user.email,
-      role: user.role,
-      bio: user.bio,
-      skills: user.skills,
-      location: user.location,
-    });
+    res.status(200).json(user); 
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
 
-// Route: PUT /api/users/profile
+
+
 router.put("/profile", protect, async (req, res) => {
   try {
     const user = await User.findById(req.user.id);
     if (user) {
       user.bio = req.body.bio || user.bio;
+      user.headline = req.body.headline || user.headline;
       user.skills = req.body.skills || user.skills;
-      user.location = req.body.location || user.location;
+      user.languages = req.body.languages || user.languages;
+      user.experience = req.body.experience || user.experience;
+      user.education = req.body.education || user.education;
+      user.socialLinks = req.body.socialLinks || user.socialLinks;
 
       const updatedUser = await user.save();
       res.json(updatedUser);
@@ -81,7 +75,7 @@ router.put("/profile", protect, async (req, res) => {
   }
 });
 
-// NEW: Route to get a user's applications
+
 router.get("/:id/applications", protect, async (req, res) => {
   try {
     if (req.user.id !== req.params.id) {
@@ -93,5 +87,6 @@ router.get("/:id/applications", protect, async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
+
 
 module.exports = router;

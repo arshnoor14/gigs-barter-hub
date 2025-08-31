@@ -5,7 +5,6 @@ import Footer from "./components/footer";
 import Home from "./pages/home";
 import PostGig from "./pages/PostGig";
 import BrowseGigs from "./pages/BrowseGigs";
-import MyProfile from "./pages/MyProfile";
 import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import AboutUs from "./pages/AboutUs";
@@ -16,9 +15,6 @@ import Dashboard from "./pages/Dashboard";
 import jwtDecode from "jwt-decode";
 import "./App.css";
 
-// -------------------------
-// ProtectedRoute Component
-// -------------------------
 const ProtectedRoute = ({ isLoggedIn, children }) => {
   if (!isLoggedIn) {
     return <Navigate to="/login" replace />;
@@ -26,20 +22,15 @@ const ProtectedRoute = ({ isLoggedIn, children }) => {
   return children;
 };
 
-// -------------------------
-// App Routes
-// -------------------------
 function AppRoutes() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
   const navigate = useNavigate();
 
-  // called after successful login/signup
   const handleLogin = () => {
     setIsLoggedIn(true);
-    navigate("/"); // redirect to home (optional)
+    navigate("/"); 
   };
 
-  // called when user clicks logout
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
@@ -59,7 +50,6 @@ function AppRoutes() {
           <Route path="/faqs" element={<FAQs />} />
           <Route path="/contact" element={<ContactUs />} />
 
-          {/* Protected Routes */}
           <Route
             path="/edit-gig/:id"
             element={
@@ -76,14 +66,14 @@ function AppRoutes() {
               </ProtectedRoute>
             }
           />
-          <Route
+          {/* <Route
             path="/profile"
             element={
               <ProtectedRoute isLoggedIn={isLoggedIn}>
                 <MyProfile />
               </ProtectedRoute>
             }
-          />
+          /> */}
           <Route
             path="/dashboard"
             element={
@@ -99,9 +89,6 @@ function AppRoutes() {
   );
 }
 
-// -------------------------
-// Main App Component
-// -------------------------
 function App() {
   return <AppRoutes />;
 }

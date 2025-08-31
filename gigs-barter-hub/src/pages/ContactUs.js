@@ -1,14 +1,31 @@
 export default function ContactUs() {
   return (
-    <div className="container mx-auto p-8 pt-20 bg-gray-100 dark:bg-gray-900 min-h-screen">
-      <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 dark:text-white text-center mb-6">Contact Us</h2>
-      <div className="max-w-md mx-auto p-6 bg-white dark:bg-gray-800 rounded-lg shadow-md text-center">
-        <p className="text-gray-700 dark:text-gray-300 text-lg mb-4">
-          Have questions or feedback? Feel free to reach out to us.
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 pt-20 pb-12">
+      <h2 className="text-4xl md:text-5xl font-extrabold text-gray-800 text-center mb-10">
+        Contact Us
+      </h2>
+
+      <div className="max-w-md mx-auto p-8 bg-white rounded-2xl shadow-lg border border-blue-100 text-center">
+        <p className="text-gray-700 text-lg mb-6">
+          Have questions, suggestions, or feedback? We’d love to hear from you! Reach out and we’ll get back to you as soon as possible.
         </p>
-        <p className="text-gray-900 dark:text-white font-semibold">
-          Email: support@gigsbarterhub.com
+
+        <p className="text-gray-900 font-semibold mb-2">Email:</p>
+        <a 
+          href="mailto:support@gigsbarterhub.com" 
+          className="text-purple-600 font-bold hover:underline"
+        >
+          support@gigsbarterhub.com
+        </a>
+
+        <p className="mt-6 text-gray-500">
+          Follow us on social media for updates and announcements.
         </p>
+        <div className="flex justify-center space-x-4 mt-4 text-gray-700">
+          <a href="#" className="hover:text-purple-600 transition-colors">Twitter</a>
+          <a href="#" className="hover:text-purple-600 transition-colors">LinkedIn</a>
+          <a href="#" className="hover:text-purple-600 transition-colors">Instagram</a>
+        </div>
       </div>
     </div>
   );
