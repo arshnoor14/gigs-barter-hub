@@ -12,6 +12,7 @@ import FAQs from "./pages/FAQs";
 import ContactUs from "./pages/ContactUs";
 import EditGig from "./pages/EditGig";
 import Dashboard from "./pages/Dashboard";
+import GigDetail from "./pages/GigDetail"; 
 import jwtDecode from "jwt-decode";
 import "./App.css";
 
@@ -21,29 +22,37 @@ const ProtectedRoute = ({ isLoggedIn, children }) => {
   }
   return children;
 };
-
 function AppRoutes() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
+  // 👇 NEW STATE: Initialize from localStorage
+  const [tokenCount, setTokenCount] = useState(() => localStorage.getItem("applicationTokens") || 0);
   const navigate = useNavigate();
 
-  const handleLogin = () => {
+  const handleLogin = (tokens) => { // 👈 handleLogin now accepts tokens
     setIsLoggedIn(true);
+    setTokenCount(tokens); // 👈 Set the count in state
+    localStorage.setItem("applicationTokens", tokens); // 👈 Save to localStorage
     navigate("/"); 
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
+    localStorage.removeItem("applicationTokens"); // 👈 Clear tokens on logout
     setIsLoggedIn(false);
+    setTokenCount(0); // 👈 Reset state
     navigate("/login");
   };
 
   return (
     <div className="flex flex-col min-h-screen">
-      <Navbar isLoggedIn={isLoggedIn} onLogout={handleLogout} />
+      {/* 👇 Pass tokenCount to Navbar */}
+      <Navbar isLoggedIn={isLoggedIn} onLogout={handleLogout} tokenCount={tokenCount} />
       <div className="flex-grow">
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/browse" element={<BrowseGigs />} />
+          {/* 👇 Pass setTokenCount to GigDetail */}
+          <Route path="/gig/:id" element={<GigDetail setTokenCount={setTokenCount} />} />
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
           <Route path="/signup" element={<Signup onLogin={handleLogin} />} />
           <Route path="/about" element={<AboutUs />} />
@@ -66,14 +75,6 @@ function AppRoutes() {
               </ProtectedRoute>
             }
           />
-          {/* <Route
-            path="/profile"
-            element={
-              <ProtectedRoute isLoggedIn={isLoggedIn}>
-                <MyProfile />
-              </ProtectedRoute>
-            }
-          /> */}
           <Route
             path="/dashboard"
             element={
@@ -88,7 +89,6 @@ function AppRoutes() {
     </div>
   );
 }
-
 function App() {
   return <AppRoutes />;
 }

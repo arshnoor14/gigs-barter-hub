@@ -6,6 +6,31 @@ const Application = require("../models/Application");
 
 router.get("/", async (req, res) => {
   try {
+    const { search } = req.query; // Get search term from query (e.g., /api/gigs?search=developer)
+
+    let filter = {}; 
+
+    if (search) {
+      const searchRegex = new RegExp(search, 'i');
+
+      filter = {
+        $or: [
+          { title: { $regex: searchRegex } },
+          { description: { $regex: searchRegex } }
+        ]
+      };
+    }
+
+    const gigs = await Gig.find(filter).populate("user", "name");
+
+    res.status(200).json(gigs);
+  } catch (error) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
+
+router.get("/", async (req, res) => {
+  try {
     const gigs = await Gig.find().populate("user", "name");
     res.status(200).json(gigs);
   } catch (error) {
@@ -95,11 +120,18 @@ router.delete("/:id", protect, async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
-
+// ... inside /:id/apply
 router.post("/:id/apply", protect, async (req, res) => {
   try {
     const gigId = req.params.id;
     const userId = req.user.id;
+
+    // --- NEW TOKEN LOGIC (START) ---
+    // We get req.user from the 'protect' middleware
+    if (req.user.applicationTokens <= 0) {
+      return res.status(403).json({ message: "You are out of application tokens." });
+    }
+    // --- NEW TOKEN LOGIC (END) ---
 
     const existingApplication = await Application.findOne({ gig: gigId, user: userId });
     if (existingApplication) {
@@ -112,7 +144,18 @@ router.post("/:id/apply", protect, async (req, res) => {
     });
 
     await newApplication.save();
-    res.status(201).json({ message: "Application submitted successfully.", application: newApplication });
+
+    // --- NEW TOKEN LOGIC (START) ---
+    // If application is saved successfully, decrement tokens and save user
+    req.user.applicationTokens -= 1;
+    await req.user.save();
+    // --- NEW TOKEN LOGIC (END) ---
+
+    res.status(201).json({ 
+      message: "Application submitted successfully.", 
+      application: newApplication,
+      remainingTokens: req.user.applicationTokens // 👈 Send back new token count
+    });
 
   } catch (error) {
     res.status(500).json({ message: "Server error", error: error.message });

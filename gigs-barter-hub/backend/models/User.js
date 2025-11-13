@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const bcrypt = require("bcryptjs");
 
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -21,7 +22,10 @@ const userSchema = new mongoose.Schema(
       enum: ["client", "freelancer"],
       default: "client",
     },
-
+    applicationTokens: {
+      type: Number,
+      default: 10,
+    },
     bio: { type: String, default: "" },
     headline: { type: String, maxlength: 100 },
     location: { type: String, default: "" },

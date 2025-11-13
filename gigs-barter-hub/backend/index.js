@@ -26,6 +26,8 @@ mongoose.connect(MONGO_URI)
     const gigRoutes = require("./routes/gigRoutes");
     app.use("/api/gigs", gigRoutes);
 
+    const applicationRoutes = require("./routes/applicationRoutes");
+    app.use("/api/applications", applicationRoutes);
     app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));
   })
   .catch((err) => {

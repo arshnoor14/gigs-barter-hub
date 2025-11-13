@@ -30,10 +30,11 @@ function Signup({ onLogin }) {
       const data = await response.json();
 
       if (response.ok) {
-        console.log("Signup successful:", data);
-        onLogin();
-        navigate('/profile');
-      } else {
+  console.log("Signup successful:", data);
+  localStorage.setItem("token", data.token); 
+  onLogin(data.user.applicationTokens); 
+  navigate('/dashboard'); 
+} else {
         setError(data.message || "Registration failed. Please try again.");
       }
     } catch (err) {

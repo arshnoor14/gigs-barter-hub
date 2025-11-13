@@ -24,10 +24,10 @@ function Login({ onLogin }) {
       const data = await response.json();
 
       if (response.ok) {
-        localStorage.setItem("token", data.token);
-        onLogin();
-        navigate("/");
-      } else {
+  localStorage.setItem("token", data.token);
+  onLogin(data.user.applicationTokens); 
+  navigate("/");
+} else {
         setError(data.message || "Login failed. Please try again.");
       }
     } catch (err) {
