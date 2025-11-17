@@ -3,10 +3,11 @@ const router = express.Router();
 const { protect } = require("../middleware/authMiddleware");
 const Gig = require("../models/Gig");
 const Application = require("../models/Application");
+const User = require("../models/User"); 
 
 router.get("/", async (req, res) => {
   try {
-    const { search } = req.query; // Get search term from query (e.g., /api/gigs?search=developer)
+    const { search } = req.query; 
 
     let filter = {}; 
 
@@ -23,15 +24,6 @@ router.get("/", async (req, res) => {
 
     const gigs = await Gig.find(filter).populate("user", "name");
 
-    res.status(200).json(gigs);
-  } catch (error) {
-    res.status(500).json({ message: "Server error" });
-  }
-});
-
-router.get("/", async (req, res) => {
-  try {
-    const gigs = await Gig.find().populate("user", "name");
     res.status(200).json(gigs);
   } catch (error) {
     res.status(500).json({ message: "Server error" });
@@ -120,18 +112,16 @@ router.delete("/:id", protect, async (req, res) => {
     res.status(500).json({ message: "Server error", error: error.message });
   }
 });
-// ... inside /:id/apply
+
 router.post("/:id/apply", protect, async (req, res) => {
   try {
     const gigId = req.params.id;
     const userId = req.user.id;
 
-    // --- NEW TOKEN LOGIC (START) ---
-    // We get req.user from the 'protect' middleware
-    if (req.user.applicationTokens <= 0) {
+   
+    if (!req.user.applicationTokens || req.user.applicationTokens <= 0) {
       return res.status(403).json({ message: "You are out of application tokens." });
     }
-    // --- NEW TOKEN LOGIC (END) ---
 
     const existingApplication = await Application.findOne({ gig: gigId, user: userId });
     if (existingApplication) {
@@ -145,16 +135,17 @@ router.post("/:id/apply", protect, async (req, res) => {
 
     await newApplication.save();
 
-    // --- NEW TOKEN LOGIC (START) ---
-    // If application is saved successfully, decrement tokens and save user
-    req.user.applicationTokens -= 1;
-    await req.user.save();
-    // --- NEW TOKEN LOGIC (END) ---
+   
+    const updatedUser = await User.findByIdAndUpdate(
+      userId,
+      { $inc: { applicationTokens: -1 } }, 
+      { new: true } 
+    );
 
     res.status(201).json({ 
       message: "Application submitted successfully.", 
       application: newApplication,
-      remainingTokens: req.user.applicationTokens // 👈 Send back new token count
+      remainingTokens: updatedUser.applicationTokens 
     });
 
   } catch (error) {

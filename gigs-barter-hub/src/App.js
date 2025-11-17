@@ -24,34 +24,31 @@ const ProtectedRoute = ({ isLoggedIn, children }) => {
 };
 function AppRoutes() {
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem("token"));
-  // 👇 NEW STATE: Initialize from localStorage
   const [tokenCount, setTokenCount] = useState(() => localStorage.getItem("applicationTokens") || 0);
   const navigate = useNavigate();
 
-  const handleLogin = (tokens) => { // 👈 handleLogin now accepts tokens
+  const handleLogin = (tokens) => { 
     setIsLoggedIn(true);
-    setTokenCount(tokens); // 👈 Set the count in state
-    localStorage.setItem("applicationTokens", tokens); // 👈 Save to localStorage
+    setTokenCount(tokens); 
+    localStorage.setItem("applicationTokens", tokens); 
     navigate("/"); 
   };
 
   const handleLogout = () => {
     localStorage.removeItem("token");
-    localStorage.removeItem("applicationTokens"); // 👈 Clear tokens on logout
+    localStorage.removeItem("applicationTokens"); 
     setIsLoggedIn(false);
-    setTokenCount(0); // 👈 Reset state
+    setTokenCount(0); // 
     navigate("/login");
   };
 
   return (
     <div className="flex flex-col min-h-screen">
-      {/* 👇 Pass tokenCount to Navbar */}
+      
       <Navbar isLoggedIn={isLoggedIn} onLogout={handleLogout} tokenCount={tokenCount} />
-      <div className="flex-grow">
-        <Routes>
+<div className="flex-grow pt-16">        <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/browse" element={<BrowseGigs />} />
-          {/* 👇 Pass setTokenCount to GigDetail */}
           <Route path="/gig/:id" element={<GigDetail setTokenCount={setTokenCount} />} />
           <Route path="/login" element={<Login onLogin={handleLogin} />} />
           <Route path="/signup" element={<Signup onLogin={handleLogin} />} />

@@ -88,14 +88,14 @@ export default function EditGig() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center min-h-screen pt-16 bg-gray-100 dark:bg-gray-900 text-xl font-semibold text-gray-900 dark:text-white">
+      <div className="flex items-center justify-center min-h-screen bg-gray-100 dark:bg-gray-900 text-xl font-semibold text-gray-900 dark:text-white">
         <p>Loading gig...</p>
       </div>
     );
   }
 
   return (
-    <div className="flex items-center justify-center min-h-screen pt-16 bg-white">
+    <div className="flex items-center justify-center min-h-screen bg-white">
   <div className="bg-gradient-to-br from-yellow-50 via-white to-yellow-50 p-8 rounded-2xl shadow-xl w-full max-w-2xl border border-yellow-200">
     <h2 className="text-4xl font-extrabold text-yellow-600 mb-6 text-center tracking-wide">
       Edit Gig

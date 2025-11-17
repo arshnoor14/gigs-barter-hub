@@ -1,9 +1,7 @@
-// src/pages/GigDetail.js
 import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom'; // 👈 Make sure Link is imported
 import { jwtDecode } from 'jwt-decode';
 
-// 👇 STEP 1: Accept setTokenCount as a prop
 export default function GigDetail({ setTokenCount }) { 
   const [gig, setGig] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -35,12 +33,10 @@ export default function GigDetail({ setTokenCount }) {
         const data = await response.json();
         setGig(data);
 
-        // Check if the logged-in user is the owner
         if (loggedInUserId && data.user && data.user._id === loggedInUserId) {
           setIsOwner(true);
         }
 
-        // Check if the user has already applied
         if (loggedInUserId) {
           const appResponse = await fetch(`http://localhost:5000/api/users/${loggedInUserId}/applications`, {
             headers: { 'Authorization': `Bearer ${token}` }
@@ -48,8 +44,7 @@ export default function GigDetail({ setTokenCount }) {
           if (appResponse.ok) {
             const applications = await appResponse.json();
             
-            // 👇 STEP 2: FIX FOR THE CRASH
-            // Add "app.gig &&" to safely check for null gigs
+           
             if (applications.some(app => app.gig && app.gig._id === id)) {
               setHasApplied(true);
             }
@@ -84,16 +79,13 @@ export default function GigDetail({ setTokenCount }) {
 
       const data = await response.json();
       if (response.ok) {
-        // --- 👇 STEP 3: TOKEN LOGIC ---
         const newCount = data.remainingTokens;
-        localStorage.setItem("applicationTokens", newCount); // Update localStorage
-        setTokenCount(newCount); // Update global state in App.js
-        // --- 👆 END TOKEN LOGIC ---
+        localStorage.setItem("applicationTokens", newCount); 
+        setTokenCount(newCount); 
 
         setMessage('Application submitted successfully!');
-        setHasApplied(true); // Disable button after applying
+        setHasApplied(true); 
       } else {
-        // Show error from backend (e.g., "Out of tokens")
         setError(data.message || 'Failed to apply');
       }
     } catch (err) {
@@ -102,19 +94,19 @@ export default function GigDetail({ setTokenCount }) {
   };
 
   if (loading) {
-    return <div className="min-h-screen pt-24 text-center">Loading gig details...</div>;
+    return <div className="min-h-screen text-center">Loading gig details...</div>;
   }
 
   if (error && !gig) {
-    return <div className="min-h-screen pt-24 text-center text-red-500">Error: {error}</div>;
+    return <div className="min-h-screen text-center text-red-500">Error: {error}</div>;
   }
   
   if (!gig) {
-     return <div className="min-h-screen pt-24 text-center">Gig not found.</div>;
+     return <div className="min-h-screen text-center">Gig not found.</div>;
   }
 
   return (
-    <div className="container mx-auto p-8 pt-24 min-h-screen">
+    <div className="container mx-auto p-8 min-h-screen">
       <div className="max-w-3xl mx-auto bg-white rounded-2xl shadow-xl p-8 border border-gray-200">
         <div className="flex justify-between items-start mb-4">
           <h2 className="text-4xl font-extrabold text-gray-800">{gig.title}</h2>
@@ -154,7 +146,6 @@ export default function GigDetail({ setTokenCount }) {
               Apply Now
             </button>
           )}
-          {/* Add a link to login if user is not logged in */}
           {!token && !isOwner && <p className="text-sm text-gray-500 mt-2">You must be <Link to="/login" className="text-purple-600">logged in</Link> to apply.</p>}
         </div>
       </div>

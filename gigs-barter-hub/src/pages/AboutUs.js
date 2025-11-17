@@ -1,8 +1,7 @@
 export default function AboutUs() {
   return (
-    <div className="relative min-h-screen bg-gradient-to-b from-purple-50 via-pink-50 to-yellow-50 overflow-hidden pt-20">
+    <div className="relative min-h-screen bg-gradient-to-b from-purple-50 via-pink-50 to-yellow-50 overflow-hidden ">
 
-      {/* Hero Section */}
       <div className="md:flex md:items-center md:justify-between container mx-auto px-6">
         <div className="md:w-1/2 text-center md:text-left p-6">
           <h1 className="text-4xl md:text-5xl font-extrabold text-gray-900 mb-4 leading-snug">
@@ -25,7 +24,6 @@ export default function AboutUs() {
       <div className="md:flex items-center mt-16 container mx-auto px-6">
         <div className="md:w-1/3 flex items-center justify-center">
           <h2 className="text-3xl md:text-4xl font-extrabold text-gray-900 transform -rotate-90 tracking-wide">
-            {/* About Us */}
           </h2>
         </div>
         <div className="md:w-2/3 p-6 text-gray-700 leading-relaxed space-y-4">
@@ -41,7 +39,6 @@ export default function AboutUs() {
         </div>
       </div>
 
-      {/* Bottom Section with Accent */}
       <div className="md:flex items-center mt-16 container mx-auto px-6">
         <div className="md:w-1/2 p-6">
           <img

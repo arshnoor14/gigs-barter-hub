@@ -53,7 +53,7 @@ export default function PostGig() {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50 pt-16">
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 ">
   <div className="bg-gradient-to-br from-white via-gray-50 to-white p-8 rounded-2xl shadow-2xl w-full max-w-2xl border border-gray-200">
     <h2 className="text-4xl font-extrabold text-gray-800 mb-6 text-center tracking-wide">
       Post a New Gig

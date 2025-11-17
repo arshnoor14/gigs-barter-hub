@@ -1,6 +1,6 @@
 export default function ContactUs() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 pt-20 pb-12">
+    <div className="min-h-screen bg-gradient-to-br from-green-50 via-blue-50 to-purple-50 pb-12">
       <h2 className="text-4xl md:text-5xl font-extrabold text-gray-800 text-center mb-10">
         Contact Us
       </h2>

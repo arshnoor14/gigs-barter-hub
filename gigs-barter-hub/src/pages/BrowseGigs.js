@@ -1,4 +1,3 @@
-// src/pages/BrowseGigs.js
 import React, { useState, useEffect } from "react";
 import {jwtDecode} from "jwt-decode";
 import { Link } from "react-router-dom";
@@ -16,7 +15,7 @@ export default function BrowseGigs() {
   const token = localStorage.getItem("token");
 
   useEffect(() => {
-    let currentUserId = null; // Use a local variable to prevent state lag issues
+    let currentUserId = null; 
 
     const fetchAppliedGigs = async (userId, token) => {
       try {
@@ -26,7 +25,7 @@ export default function BrowseGigs() {
         );
         if (response.ok) {
           const data = await response.json();
-          setAppliedGigs(data.map((app) => (app.gig && app.gig._id ? app.gig._id : app.gig)));
+          setAppliedGigs(data.map(app => app.gig ? app.gig._id : null).filter(id => id !== null));
         }
       } catch (err) {
         console.error("Failed to fetch applied gigs:", err);
@@ -36,7 +35,7 @@ export default function BrowseGigs() {
     if (token) {
       try {
         const decoded = jwtDecode(token);
-        currentUserId = decoded.id; // 👈 SET LOCAL VARIABLE
+        currentUserId = decoded.id; 
         setLoggedInUserId(currentUserId);
         fetchAppliedGigs(currentUserId, token);
       } catch (e) {
@@ -52,16 +51,13 @@ export default function BrowseGigs() {
         if (!response.ok) throw new Error("Failed to fetch gigs");
         const data = await response.json();
         
-        // --- 👇 NEW LOGIC ---
-        // If a user is logged in, filter out their own gigs from this page
+       
         if (currentUserId) {
-          const otherUserGigs = data.filter(gig => gig.user._id !== currentUserId);
+          const otherUserGigs = data.filter(gig => gig.user && gig.user._id !== currentUserId);
           setGigs(otherUserGigs);
         } else {
-          // If no one is logged in, show all gigs
           setGigs(data);
         }
-        // --- 👆 END NEW LOGIC ---
 
       } catch (err) {
         setError(err.message);
@@ -71,14 +67,7 @@ export default function BrowseGigs() {
     };
 
     fetchGigs();
-  }, [token, searchQuery]); // Re-run when token or search changes
-
-  // --- ❌ FUNCTION REMOVED ---
-  // The 'handleApply' function is no longer needed here.
-  
-  // --- ❌ FUNCTION REMOVED ---
-  // The 'handleDelete' function is no longer needed here.
-  // Your Dashboard.js still has its 'Edit' button, which is correct.
+  }, [token, searchQuery]); 
 
   if (loading) {
     return (
@@ -97,7 +86,7 @@ export default function BrowseGigs() {
   }
 
   return (
-    <div className="container mx-auto p-8 pt-24 bg-gradient-to-br from-teal-50 via-white to-indigo-50 min-h-screen">
+    <div className="container mx-auto p-8 pb-12 bg-gradient-to-br from-teal-50 via-white to-indigo-50 min-h-screen">
       <header className="text-center mb-12">
         <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900">
           Discover Opportunities
@@ -145,7 +134,6 @@ export default function BrowseGigs() {
                 key={gig._id}
                 className={`flex flex-col justify-between bg-gradient-to-tr from-pink-50 via-white to-purple-50 rounded-3xl shadow-xl p-6 hover:shadow-2xl transform hover:-translate-y-1 transition-all duration-300 border border-gray-200`}
               >
-                {/* Top Section */}
                 <div>
                   <div className="flex justify-between items-start mb-4">
                     <h3 className="text-2xl font-bold text-purple-700">{gig.title}</h3>
@@ -153,18 +141,15 @@ export default function BrowseGigs() {
                       {gig.price}
                     </span>
                   </div>
-                  {/* (Description is already removed) */}
                 </div>
 
-                {/* Bottom Section */}
                 <div className="flex items-center justify-between mt-4">
                   <div className="text-sm text-gray-500">
                     Posted by: <span className="font-medium text-gray-700">{gig.user ? gig.user.name : "Unknown"}</span>
                   </div>
 
                   <div className="flex items-center gap-3">
-                    {/* --- 👇 MODIFIED LOGIC --- */}
-                    {/* We removed the Edit/Delete condition entirely */}
+                    
                     {loggedInUserId && appliedGigs.includes(gig._id) ? (
                       <span className="text-green-600 font-semibold text-sm">✅ Applied</span>
                     ) : (
@@ -175,7 +160,6 @@ export default function BrowseGigs() {
                         View Details
                       </Link>
                     )}
-                    {/* --- 👆 END MODIFIED LOGIC --- */}
                   </div>
                 </div>
               </article>

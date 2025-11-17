@@ -1,4 +1,3 @@
-// src/pages/Dashboard.js
 import React, { useState, useEffect, useCallback } from "react"; // 👈 Add useCallback
 import { useNavigate } from "react-router-dom";
 import { jwtDecode } from "jwt-decode";
@@ -8,7 +7,6 @@ export default function Dashboard() {
   const [profile, setProfile] = useState({});
   const [postedGigs, setPostedGigs] = useState([]);
   const [appliedGigs, setAppliedGigs] = useState([]);
-  // 👇 NEW STATE to hold applications received ON your gigs
   const [applicationsOnMyGigs, setApplicationsOnMyGigs] = useState([]);
 
   const [loading, setLoading] = useState(true);
@@ -29,7 +27,6 @@ export default function Dashboard() {
 
   const token = localStorage.getItem("token");
 
-  // 👇 Use useCallback for this function
   const fetchDashboardData = useCallback(async () => {
     if (!token) {
       navigate("/login");
@@ -37,12 +34,11 @@ export default function Dashboard() {
     }
 
     try {
-      setLoading(true); // Set loading at the start
+      setLoading(true); 
       setError("");
       const decoded = jwtDecode(token);
       const userId = decoded.id;
 
-      // --- Fetch Profile ---
       const profileResponse = await fetch(
         `http://localhost:5000/api/users/profile`,
         {
@@ -53,9 +49,9 @@ export default function Dashboard() {
       if (profileResponse.ok) {
         setProfile(profileData);
         setProfileFormData({
-          bio: profileData.bio || "", // Add || "" as fallback
+          bio: profileData.bio || "", 
           skills: profileData.skills ? profileData.skills.join(", ") : "",
-          location: profileData.location || "", // Add || "" as fallback
+          location: profileData.location || "", 
           headline: profileData.headline || "",
           languages: profileData.languages
             ? profileData.languages.join(", ")
@@ -68,7 +64,6 @@ export default function Dashboard() {
         setError(profileData.message || "Failed to fetch profile.");
       }
 
-      // --- Fetch Posted Gigs ---
       const postedGigsResponse = await fetch(
         `http://localhost:5000/api/gigs/my-gigs`,
         {
@@ -78,13 +73,11 @@ export default function Dashboard() {
       const postedGigsData = await postedGigsResponse.json();
       if (postedGigsResponse.ok) {
         setPostedGigs(postedGigsData);
-        // 👇 NEW: After fetching gigs, fetch applications for them
         fetchApplicationsForGigs(postedGigsData, token);
       } else {
         setError(postedGigsData.message || "Failed to fetch your posted gigs.");
       }
 
-      // --- Fetch Applied Gigs ---
       const appliedGigsResponse = await fetch(
         `http://localhost:5000/api/users/${userId}/applications`,
         {
@@ -105,9 +98,8 @@ export default function Dashboard() {
     } finally {
       setLoading(false);
     }
-  }, [navigate, token]); // 👈 Add token and navigate
+  }, [navigate, token]); 
 
-  // 👇 NEW FUNCTION: Fetches applications for all the gigs you posted
   const fetchApplicationsForGigs = async (gigs, token) => {
     const allApplications = [];
     for (const gig of gigs) {
@@ -131,7 +123,6 @@ export default function Dashboard() {
     setApplicationsOnMyGigs(allApplications);
   };
 
-  // 👇 NEW FUNCTION: Handles accepting or rejecting an application
   const handleApplicationStatus = async (applicationId, status) => {
     try {
       const response = await fetch(`http://localhost:5000/api/applications/${applicationId}`, {
@@ -144,7 +135,6 @@ export default function Dashboard() {
       });
 
       if (response.ok) {
-        // Refresh the dashboard data to show the change
         fetchDashboardData();
         alert(`Application ${status}!`);
       } else {
@@ -158,7 +148,7 @@ export default function Dashboard() {
 
   useEffect(() => {
     fetchDashboardData();
-  }, [fetchDashboardData]); // 👈 Use fetchDashboardData as dependency
+  }, [fetchDashboardData]); 
 
   const handleProfileFormChange = (e) => {
     setProfileFormData({ ...profileFormData, [e.target.name]: e.target.value });
@@ -168,7 +158,6 @@ export default function Dashboard() {
     e.preventDefault();
     setError("");
 
-    // Make sure to filter out empty strings from skills/languages
     const updatedProfileData = {
       bio: profileFormData.bio,
       headline: profileFormData.headline,
@@ -194,7 +183,7 @@ export default function Dashboard() {
 
       if (response.ok) {
         const data = await response.json(); 
-        setProfile(data); // Update profile state directly
+        setProfile(data); 
         alert("Profile updated successfully!");
         setIsEditingProfile(false);
       } else {
@@ -222,13 +211,12 @@ export default function Dashboard() {
     );
   }
 return (
-  <div className="container mx-auto p-8 pt-20 bg-gray-50 min-h-screen">
-    <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 text-center mb-10">
+<div className="container mx-auto p-8 pb-12 bg-gray-50 min-h-screen">
+      <h2 className="text-4xl md:text-5xl font-extrabold text-gray-900 text-center mb-10">
       My Dashboard
     </h2>
     <div className="max-w-4xl mx-auto space-y-10">
 
-      {/* --- MY PROFILE SECTION --- */}
       <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl shadow-xl border border-purple-300 p-8 transform transition-transform hover:-translate-y-1 hover:shadow-2xl">
         <div className="flex justify-between items-center mb-6">
           <h3 className="text-3xl font-extrabold text-purple-800">My Profile</h3>
@@ -331,7 +319,6 @@ return (
           </form>
         ) : (
           <div className="space-y-3 text-purple-900 text-lg">
-            {/* Profile details... (no changes here) */}
             <p><strong>Name:</strong> {profile.name}</p>
             <p><strong>Email:</strong> {profile.email}</p>
             <p><strong>Role:</strong> {profile.role}</p>
@@ -347,7 +334,6 @@ return (
         )}
       </div>
 
-      {/* --- MY POSTED GIGS SECTION --- */}
       <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 transform transition-transform hover:-translate-y-1 hover:shadow-2xl">
         <h3 className="text-2xl font-bold text-purple-800 mb-4">My Posted Gigs</h3>
         {postedGigs.length > 0 ? (
@@ -375,7 +361,6 @@ return (
         )}
       </div>
 
-      {/* --- APPLICATIONS ON MY GIGS (NEW SECTION) --- */}
       <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 transform transition-transform hover:-translate-y-1 hover:shadow-2xl">
         <h3 className="text-2xl font-bold text-purple-800 mb-4">Applications on Your Gigs</h3>
         {applicationsOnMyGigs.length > 0 ? (
@@ -429,7 +414,6 @@ return (
         )}
       </div>
 
-      {/* --- MY APPLICATIONS SECTION --- */}
       <div className="bg-white rounded-xl shadow-lg border border-gray-200 p-6 transform transition-transform hover:-translate-y-1 hover:shadow-2xl">
         <h3 className="text-2xl font-bold text-purple-800 mb-4">My Applications</h3>
         {appliedGigs.length > 0 ? (

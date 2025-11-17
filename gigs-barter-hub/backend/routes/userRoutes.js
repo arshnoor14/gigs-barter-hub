@@ -9,36 +9,32 @@ router.post("/register", async (req, res) => {
   try {
     const { name, email, password, role } = req.body;
 
-    // Check if user already exists
     const userExists = await User.findOne({ email });
     if (userExists) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // Create new user (applicationTokens will default to 10 from the model)
     const newUser = new User({ name, email, password, role });
     await newUser.save();
 
-    // Create a token immediately to log them in
     const token = jwt.sign({ id: newUser._id }, process.env.JWT_SECRET, {
       expiresIn: "1h",
     });
 
-    // Send back the token and user info
     res.status(201).json({
       message: "User registered successfully",
-      token, // Send the token
+      token, 
       user: {
         name: newUser.name,
         email: newUser.email,
         role: newUser.role,
-        applicationTokens: newUser.applicationTokens // Send the new token count
+        applicationTokens: newUser.applicationTokens 
       },
     });
 
   } catch (err) {
     console.error(err);
-    if (err.code === 11000) { // Handle duplicate email error
+    if (err.code === 11000) { 
         return res.status(400).json({ message: "Email already exists." });
     }
     res.status(500).json({ message: "Something went wrong", error: err.message });
@@ -57,7 +53,6 @@ router.post("/login", async (req, res) => {
       expiresIn: "1h",
     });
 
-    // Send back the application token count on login
     res.status(200).json({
       message: "Login successful",
       token,
@@ -65,7 +60,7 @@ router.post("/login", async (req, res) => {
         name: user.name,
         email: user.email,
         role: user.role,
-        applicationTokens: user.applicationTokens // 👈 ADD THIS LINE
+        applicationTokens: user.applicationTokens 
       },
     });
   } catch (err) {
@@ -76,7 +71,7 @@ router.post("/login", async (req, res) => {
 
 router.get("/profile", protect, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select("-password"); // exclude password
+    const user = await User.findById(req.user.id).select("-password"); 
     if (!user) {
       return res.status(4404).json({ message: "User not found" });
     }

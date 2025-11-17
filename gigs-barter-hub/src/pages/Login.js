@@ -37,7 +37,7 @@ function Login({ onLogin }) {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-green-50 pt-16">
+    <div className="flex items-center justify-center min-h-screen bg-gradient-to-br from-blue-50 via-purple-50 to-green-50 ">
       <div className="bg-white p-10 rounded-3xl shadow-md w-full max-w-md border border-blue-100">
         <h2 className="text-3xl font-extrabold text-gray-800 mb-6 text-center tracking-wide">
           Login to Your Account
